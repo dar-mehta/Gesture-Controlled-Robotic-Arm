@@ -1,0 +1,73 @@
+# Project: Robotic Arm MYO
+# Makefile created by Dev-C++ 5.11
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+OBJ      = main.o drive.o laptop.o adc_8591.o bluetooth.o brick.o color.o compass.o error.o filesystem.o i2c.o io_8574.o motor.o sensor.o sonar.o tilt.o
+LINKOBJ  = main.o drive.o laptop.o adc_8591.o bluetooth.o brick.o color.o compass.o error.o filesystem.o i2c.o io_8574.o motor.o sensor.o sonar.o tilt.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc lib/myo32.lib lib/myo64.lib
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
+BIN      = "Robotic Arm MYO.exe"
+CXXFLAGS = $(CXXINCS) -std=c++11
+CFLAGS   = $(INCS) -std=c++11
+RM       = rm.exe -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+main.o: main.cpp
+	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+
+drive.o: drive.cpp
+	$(CPP) -c drive.cpp -o drive.o $(CXXFLAGS)
+
+laptop.o: laptop.cpp
+	$(CPP) -c laptop.cpp -o laptop.o $(CXXFLAGS)
+
+adc_8591.o: adc_8591.cpp
+	$(CPP) -c adc_8591.cpp -o adc_8591.o $(CXXFLAGS)
+
+bluetooth.o: bluetooth.cpp
+	$(CPP) -c bluetooth.cpp -o bluetooth.o $(CXXFLAGS)
+
+brick.o: brick.cpp
+	$(CPP) -c brick.cpp -o brick.o $(CXXFLAGS)
+
+color.o: color.cpp
+	$(CPP) -c color.cpp -o color.o $(CXXFLAGS)
+
+compass.o: compass.cpp
+	$(CPP) -c compass.cpp -o compass.o $(CXXFLAGS)
+
+error.o: error.cpp
+	$(CPP) -c error.cpp -o error.o $(CXXFLAGS)
+
+filesystem.o: filesystem.cpp
+	$(CPP) -c filesystem.cpp -o filesystem.o $(CXXFLAGS)
+
+i2c.o: i2c.cpp
+	$(CPP) -c i2c.cpp -o i2c.o $(CXXFLAGS)
+
+io_8574.o: io_8574.cpp
+	$(CPP) -c io_8574.cpp -o io_8574.o $(CXXFLAGS)
+
+motor.o: motor.cpp
+	$(CPP) -c motor.cpp -o motor.o $(CXXFLAGS)
+
+sensor.o: sensor.cpp
+	$(CPP) -c sensor.cpp -o sensor.o $(CXXFLAGS)
+
+sonar.o: sonar.cpp
+	$(CPP) -c sonar.cpp -o sonar.o $(CXXFLAGS)
+
+tilt.o: tilt.cpp
+	$(CPP) -c tilt.cpp -o tilt.o $(CXXFLAGS)
