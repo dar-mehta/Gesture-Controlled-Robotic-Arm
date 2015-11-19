@@ -32,7 +32,6 @@ Motor *motorToggleClaw = new Motor (OUT_A, armConnection);
 Motor *motorRotateClaw = new Motor (OUT_C, armConnection);
 
 Drive drive(motorLeftDrive, motorRightDrive);
-bool driveOn = true, armOn = true, controllingDrive = true;
 ArmLift arm (motorLiftArm);
 Claw claw (motorToggleClaw, motorRotateClaw);
 
@@ -57,11 +56,21 @@ void selectPort(ifstream &in, int &drivePort, int &armPort){
 }
 
 class DataCollector : public myo::DeviceListener {
+private:
+		
+		boolean armOn, driveOn, controllingDrive;
+			
 public:
     DataCollector()
     : onArm(false), isUnlocked(false), roll_w(0), pitch_w(0), yaw_w(0), currentPose()
     {
     }
+    
+    void initializeBools(){
+    	armOn = true;
+    	driveOn = true;
+    	controllingDrive = true;
+	}
 
     void onUnpair(myo::Myo* myo, uint64_t timestamp)
     {
@@ -129,30 +138,65 @@ public:
 
         if (pose != myo::Pose::unknown && pose != myo::Pose::rest) {
             myo->unlock(myo::Myo::unlockHold);
-            if (pose == myo::Pose::fist){
+            
+            //If the user makes a fist
+            if (pose == myo::Pose::waveIn){
+            	
+            	//If not controlling a drive, switch this on
 	    		if (!controllingDrive){
 					controllingDrive = true;
 				}
+				
+				//If drive is locked, unlock it
 	        	if(!driveOn){
 	        		driveOn = true;
 	        		std::cout << "Drive Unlocked!" << endl;
+        		//Else lock it , stop the drive
 				} else {
 					driveOn = false;
 					drive.forward(0);
 					std::cout << "Drive Locked!" << endl;
 				}
-			} else if (pose == myo::Pose::fingersSpread){
+				
+			//If the user spreads their fingers	
+			} else if (pose == myo::Pose::waveOut){
+				//If the user is controlling the drive, switch to arm control
 				if (controllingDrive){
 					controllingDrive = false;
 				}
+				
+				//If the arm is locked, unlock it
 				if (!armOn){
 					armOn = true;
 					std::cout << "Arm Unlocked!" << endl;
+				
+				//If the arm is unlocked, lock it	
 				} else {
 					armOn = false;
 					std::cout << "Arm Locked!" << endl;
 				}
 			}
+			
+			//If user swipes to the right
+			else if (pose == myo::Pose::fingersSpread){
+				cout<< "WAVEIN DETECTED" << endl;
+				if(!controllingDrive)
+			       cout<< "cond1 met"<<endl;
+	   			if(!armOn)
+				   cout<< "cond2 Met"<<endl;   
+				if((!controllingDrive) && (!armOn) ){
+					cout<<"Opening Claw"<<endl;
+					claw.open();
+				}
+			}
+			else if(pose == myo::Pose::fist){
+				 cout<< "WAVEOUT DETECTED" << controllingDrive << armOn << endl;
+				if(!controllingDrive && !armOn){
+					cout<<"Closing Claw";
+					claw.close();
+				}
+			}
+			
 			
 			if (pose == myo::Pose::doubleTap){
 				myo->lock();
@@ -225,9 +269,12 @@ public:
     myo::Pose currentPose;
 };
 
+
+
 int main(int argc, char** argv)
 {
 	ifstream comIn ("comports.txt");
+	cout<<"flag";
 	int driveCom = 0, armCom = 0;
 	selectPort(comIn, driveCom, armCom);
 	
@@ -237,6 +284,7 @@ int main(int argc, char** argv)
     driveConnection->connect(driveCom);
     armConnection->connect(armCom);
     cout << "Connected" << endl;
+    claw.initialize();
 	
     myo::Hub hub("com.example.hello-myo");
 
@@ -251,7 +299,7 @@ int main(int argc, char** argv)
     std::cout << "Connected to a Myo armband!" << std::endl << std::endl;
 
     DataCollector collector;
-
+	collector.initializeBools();
     hub.addListener(&collector);
 
     while (1) {
