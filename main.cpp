@@ -37,7 +37,7 @@ Claw claw (motorToggleClaw, motorRotateClaw);
 
 float motor_speed = 0;
 const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40, -75};
-const int latSpeed[16]={0, 40, 25, 15, 10, 5, 100, 0, 0, 0, -5, -10, -15, -25, -40, 0};
+const double latSpeed[9]={0.100,0.80,0.60,0,0,0,-0.60,-0.80,-0.100};
 
 void selectPort(ifstream &in, int &drivePort, int &armPort){
 	cout<<"\nSelect Connection Device"<<endl;
@@ -58,7 +58,8 @@ void selectPort(ifstream &in, int &drivePort, int &armPort){
 class DataCollector : public myo::DeviceListener {
 private:
 		
-		boolean armOn, driveOn, controllingDrive;
+		boolean armOn, driveOn, controllingDrive, onInit;
+		int yawInit, index, lMotorSpeed, rMotorSpeed;
 			
 public:
     DataCollector()
@@ -67,24 +68,37 @@ public:
     }
     
     void initializeBools(){
-    	armOn = true;
-    	driveOn = true;
-    	controllingDrive = true;
+    	onInit = true;
+    	armOn = false;
+    	driveOn = false;
+    	controllingDrive = false;
+    	index=4;
+    	yawInit=0;
+    	lMotorSpeed=0;
+    	rMotorSpeed = 0;
 	}
 
     void onUnpair(myo::Myo* myo, uint64_t timestamp)
     {
         roll_w = 0;
         pitch_w = 0;
+        index = 4;
         yaw_w = 0;
         onArm = false;
         isUnlocked = false;
     }
 	
+	void rollSpeed(float roll){
+		roll_w = static_cast<int>((roll + (float)M_PI/2.0f)/M_PI * 18);
+		if(!armOn&&!controllingDrive){
+			cout<<"int-cast roll reading:"<<roll_w<<endl;
+		}
+	}
+	
 	void longitudinalSpeed (float pitch){
 		int pitch_w = static_cast<int>((pitch + (float)M_PI/2.0f)/M_PI * 18);
 		if (controllingDrive && driveOn){
-			drive.forward(longSpeed[pitch_w]);
+			lMotorSpeed=rMotorSpeed = longSpeed[pitch_w];
 		//cout << longSpeed[pitch_w] << endl;
 		} else if (armOn){
 			arm.raise(longSpeed[pitch_w]);
@@ -92,13 +106,24 @@ public:
 	}
 	
 	void lateralSpeed (float yaw){
-		int yaw_w = static_cast<int>((yaw + (float)M_PI)/(M_PI * 2.0f) * 18);
+		 int yaw_w = static_cast<int>((yaw + (float)M_PI)/(M_PI * 2.0f) * 18);
+		 if(onInit){
+		 	yawInit = yaw_w;
+		 	onInit=false;
+		 }
+		//int yaw_w = static_cast<int>((yaw + (float)M_PI/2.0f)/M_PI * 18);
 		if (controllingDrive && driveOn){
-			if (yaw_w > 2 && yaw_w < 7){
-				drive.turnLeft(latSpeed[yaw_w]);
-			} else if (yaw_w > 9 && yaw_w < 14){
-				drive.turnRight(latSpeed[yaw_w]);
-			}
+	        index = (yaw_w - yawInit) + 4;
+	        lMotorSpeed*=(latSpeed[index]);
+	        rMotorSpeed*=-latSpeed[index];
+//			if (index >= 0 && index < 4){
+//				cout<<"Turning right"<<endl;
+//				
+//				drive.rotateCCW(latSpeed[yaw_w]);
+//			} else if (index > 4 && yaw_w <=8 ){
+//   			  	cout<<"Turning left"<<endl;
+//				drive.rotateCCW(latSpeed[yaw_w]);
+//			}
 		}
 		//cout << latSpeed[yaw_w] << endl;
 	}
@@ -124,12 +149,15 @@ public:
         float pitch = asin(max(-1.0f, min(1.0f, 2.0f * (quat.w() * quat.y() - quat.z() * quat.x()))));
         float yaw = atan2(2.0f * (quat.w() * quat.z() + quat.x() * quat.y()),
                         1.0f - 2.0f * (quat.y() * quat.y() + quat.z() * quat.z()));
+                     
 		
-		//longitudinalSpeed(pitch);
-		//lateralSpeed(yaw);
+		longitudinalSpeed(pitch);
+		lateralSpeed(yaw);
+		drive.forward(lMotorSpeed,rMotorSpeed);
         roll_w = static_cast<int>((roll + (float)M_PI)/(M_PI * 2.0f) * 18);
        	pitch_w = static_cast<int>((pitch + (float)M_PI/2.0f)/M_PI * 18);
-        yaw_w = static_cast<int>((yaw + (float)M_PI)/(M_PI * 2.0f) * 18);   
+        yaw_w = static_cast<int>((yaw + (float)M_PI)/(M_PI * 2.0f) * 18); 
+		index = yaw_w-yawInit+4;  
     }
 
     void onPose(myo::Myo* myo, uint64_t timestamp, myo::Pose pose)
@@ -154,7 +182,7 @@ public:
         		//Else lock it , stop the drive
 				} else {
 					driveOn = false;
-					drive.forward(0);
+					drive.forward(0,0);
 					std::cout << "Drive Locked!" << endl;
 				}
 				
@@ -242,7 +270,7 @@ public:
         std::cout   //<< '[' << std::string(roll_w, 'R') << std::string(18 - roll_w, ' ') << ']'
 //                  	<< '[' << std::string(pitch_w, 'P') << std::string(18 - pitch_w, ' ') << ']'
 //                  	<< '[' << std::string(yaw_w, 'Y') << std::string(18 - yaw_w, ' ') << ']'
-                  	<< '[' << controllingNow << yaw_w << ": " << latSpeed[yaw_w] << std::string(18 - yaw_w, ' ') << ']'
+                  	<< '[' << controllingNow << index << ": " << latSpeed[index] << std::string(18 - index, ' ') << ']'
                   	<< '[' << controllingNow << pitch_w << ": " << longSpeed [pitch_w] << std::string(18 - pitch_w, ' ') << ']';
 //                  << '[' << motorSpeed[pitch_w] << std::string(18 - pitch_w, ' ') << ']'
 //                  << '[' << motor_speed << std::string(18 - pitch_w, ' ') << ']';
@@ -303,7 +331,7 @@ int main(int argc, char** argv)
     hub.addListener(&collector);
 
     while (1) {
-        hub.run(1000/20);
+        hub.run(1000/15);
         collector.print();
     }
 	//driveConnection->disconnect();
