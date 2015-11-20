@@ -5,8 +5,9 @@
 #include <iosfwd>
 #include <string>
 
-#include <C:\Users\Dar Mehta\Desktop\MTE100\libmyo.h>
 
+//#include <C:\Users\Dar Mehta\Desktop\MTE100\libmyo.h>
+#include <C:\Users\Matthew\Documents\GitHub\Gesture-Controlled-Robotic-Arm\libmyo.h>
 namespace myo {
 
 /// A pose represents a detected configuration of the user's hand.

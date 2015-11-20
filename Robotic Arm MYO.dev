@@ -4,7 +4,7 @@ Name=Robotic Arm MYO
 Type=1
 Ver=2
 ObjFiles=
-Includes="C:\Users\Dar Mehta\Desktop\MTE100";"C:\Users\Dar Mehta\Desktop\MTE100\myo"
+Includes=C:\Users\Matthew\Documents\GitHub\Gesture-Controlled-Robotic-Arm;C:\Users\Matthew\Documents\GitHub\Gesture-Controlled-Robotic-Arm\myo
 Libs=
 PrivateResource=
 ResourceIncludes=
@@ -61,16 +61,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit13]
-FileName=color.cpp
-CompileCpp=1
-Folder=Bluetooth Library
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit14]
 FileName=color.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -80,8 +70,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit24]
-FileName=i2c.h
+[Unit14]
+FileName=compass.cpp
 CompileCpp=1
 Folder=Bluetooth Library
 Compile=1
@@ -90,7 +80,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit25]
+[Unit24]
 FileName=io_8574.cpp
 CompileCpp=1
 Folder=Bluetooth Library
@@ -100,8 +90,18 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit25]
+FileName=io_8574.h
+CompileCpp=1
+Folder=Bluetooth Library
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
 [Unit43]
-FileName=..\..\..\Desktop\MTE100\armlift.h
+FileName=claw.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -111,7 +111,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit44]
-FileName=..\..\..\Desktop\MTE100\claw.cpp
+FileName=claw.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -160,27 +160,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit6]
-FileName=myo.hpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit7]
-FileName=adc_8591.cpp
-CompileCpp=1
-Folder=Bluetooth Library
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit8]
 FileName=adc_8591.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -190,7 +170,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit9]
+[Unit8]
 FileName=bluetooth.cpp
 CompileCpp=1
 Folder=Bluetooth Library
@@ -200,7 +180,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit10]
+[Unit9]
 FileName=bluetooth.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -210,7 +190,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit11]
+[Unit10]
 FileName=brick.cpp
 CompileCpp=1
 Folder=Bluetooth Library
@@ -220,7 +200,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit12]
+[Unit11]
 FileName=brick.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -230,8 +210,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit15]
-FileName=compass.cpp
+[Unit12]
+FileName=color.cpp
 CompileCpp=1
 Folder=Bluetooth Library
 Compile=1
@@ -240,7 +220,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit16]
+[Unit15]
 FileName=compass.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -250,7 +230,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit17]
+[Unit16]
 FileName=connection.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -260,7 +240,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit18]
+[Unit17]
 FileName=error.cpp
 CompileCpp=1
 Folder=Bluetooth Library
@@ -270,7 +250,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit19]
+[Unit18]
 FileName=error.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -280,7 +260,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit20]
+[Unit19]
 FileName=filesystem.cpp
 CompileCpp=1
 Folder=Bluetooth Library
@@ -290,7 +270,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit21]
+[Unit20]
 FileName=filesystem.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -300,7 +280,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit22]
+[Unit21]
 FileName=gyro.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -310,7 +290,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit23]
+[Unit22]
 FileName=i2c.cpp
 CompileCpp=1
 Folder=Bluetooth Library
@@ -320,8 +300,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit26]
-FileName=io_8574.h
+[Unit23]
+FileName=i2c.h
 CompileCpp=1
 Folder=Bluetooth Library
 Compile=1
@@ -330,7 +310,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit27]
+[Unit26]
 FileName=light.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -340,7 +320,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit28]
+[Unit27]
 FileName=motor.cpp
 CompileCpp=1
 Folder=Bluetooth Library
@@ -350,7 +330,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit29]
+[Unit28]
 FileName=motor.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -360,7 +340,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit30]
+[Unit29]
 FileName=nxt.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -370,7 +350,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit31]
+[Unit30]
 FileName=rcx_light.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -380,7 +360,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit32]
+[Unit31]
 FileName=rotation.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -390,7 +370,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit33]
+[Unit32]
 FileName=sensor.cpp
 CompileCpp=1
 Folder=Bluetooth Library
@@ -400,7 +380,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit34]
+[Unit33]
 FileName=sensor.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -410,7 +390,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit35]
+[Unit34]
 FileName=sonar.cpp
 CompileCpp=1
 Folder=Bluetooth Library
@@ -420,7 +400,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit36]
+[Unit35]
 FileName=sonar.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -430,7 +410,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit37]
+[Unit36]
 FileName=sound.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -440,7 +420,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit38]
+[Unit37]
 FileName=temperature.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -450,7 +430,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit39]
+[Unit38]
 FileName=tilt.cpp
 CompileCpp=1
 Folder=Bluetooth Library
@@ -460,7 +440,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit40]
+[Unit39]
 FileName=tilt.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -470,7 +450,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit41]
+[Unit40]
 FileName=touch.h
 CompileCpp=1
 Folder=Bluetooth Library
@@ -480,8 +460,18 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit41]
+FileName=armlift.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
 [Unit42]
-FileName=..\..\..\Desktop\MTE100\armlift.cpp
+FileName=armlift.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -491,9 +481,19 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit45]
-FileName=..\..\..\Desktop\MTE100\claw.h
+FileName=myo.hpp
 CompileCpp=1
 Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit6]
+FileName=adc_8591.cpp
+CompileCpp=1
+Folder=Bluetooth Library
 Compile=1
 Link=1
 Priority=1000

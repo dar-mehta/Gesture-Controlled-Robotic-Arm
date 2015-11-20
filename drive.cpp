@@ -6,11 +6,11 @@ Drive::Drive(Motor *motorA, Motor *motorB){
 	unlocked = true;
 }
 
-void Drive::forward(int speed){
+void Drive::forward(int lSpeed, int rSpeed){
 	//if (unlocked){
-		cout << "hello";
-		leftDrive->on(speed);
-		rightDrive->on(speed);
+		//cout << "hello";
+		leftDrive->on(lSpeed);
+		rightDrive->on(rSpeed);
 	//}
 }
 
@@ -29,10 +29,8 @@ void Drive::turnLeft(int speed){
 }
 
 void Drive::rotateCCW(int speed){
-	if (unlocked){
 		leftDrive->on(-speed);
 		rightDrive->on(speed);
-	}
 }
 
 void Drive::turnRight(int speed){
