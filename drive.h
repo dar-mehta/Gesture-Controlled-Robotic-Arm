@@ -10,7 +10,7 @@ class Drive{
 	public :
 		Drive(Motor*, Motor*);
 		
-		void forward(int);
+		void forward(int,int);
 		void reverse(int);
 		
 		void turnLeft(int);

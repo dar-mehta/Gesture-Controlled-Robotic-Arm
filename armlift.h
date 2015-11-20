@@ -1,23 +1,27 @@
 #ifndef __ARM__LIFT__
 #define __ARM__LIFT__
 #include "motor.h"
+#include "touch.h"
 //#include "connection.h"
-/*enum motorPort{
-	A = OUT_A;
-	B = OUT_B;
-};*/
+
 class ArmLift{
+	private:
+	    Motor *liftMotor;
+	    Touch *elevatorTouch;
+		bool unlocked;
+		
 	public :
-		ArmLift(Motor*);
+		ArmLift(Motor*,Touch*);
+		ArmLift();
 		
 		void raise(int);
 		void lower(int);
+		void stop();
+
 		
 		void unlockArm();
 		void lockArm();
 		bool isUnlocked();
 		
-		Motor *liftArm;
-		bool unlocked;
 };
 #endif

@@ -5,7 +5,7 @@
 #include <iosfwd>
 #include <string>
 
-#include <C:\Users\Dar Mehta\Desktop\MTE100\libmyo.h>
+#include <C:\Users\Matthew\Documents\GitHub\Gesture-Controlled-Robotic-Arm\myo\libmyo.h>
 
 namespace myo {
 
