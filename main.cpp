@@ -37,7 +37,7 @@ Claw claw (motorToggleClaw, motorRotateClaw);
 
 float motor_speed = 0;
 const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40, -75};
-const double latSpeed[9]={0.100,0.80,0.60,0,0,0,-0.60,-0.80,-0.100};
+const double latSpeed[9]={1,0.80,0.60,0,0,0,-0.60,-0.80,-1};
 
 void selectPort(ifstream &in, int &drivePort, int &armPort){
 	cout<<"\nSelect Connection Device"<<endl;
