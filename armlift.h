@@ -14,6 +14,7 @@ class ArmLift{
 		ArmLift(Motor*,Touch*);
 		ArmLift();
 		
+		void zeroEncoder();
 		void raise(int);
 		void lower(int);
 		void stop();

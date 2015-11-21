@@ -32,17 +32,17 @@ Motor *motorLiftArm = new Motor (OUT_B, driveConnection);
 Motor *motorToggleClaw = new Motor (OUT_A, armConnection);
 Motor *motorRotateClaw = new Motor (OUT_C, armConnection);
 
-Touch *elevatorTouch = new Touch(IN_1,driveSensorConnection);
+Touch *elevatorTouch = new Touch(IN_1,driveConnection);
 
 Drive drive(motorLeftDrive, motorRightDrive);
-ArmLift arm();
+ArmLift arm (motorLiftArm,elevatorTouch);
 Claw claw (motorToggleClaw, motorRotateClaw);
 
 float motor_speed = 0;
 const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40, -75};
 const double latSpeed[9]={1,0.80,0.60,0,0,0,-0.60,-0.80,-1};
 
-void selectPort(ifstream &in, int &drivePort, int &armPort, int sensorPort){
+void selectPort(ifstream &in, int &drivePort, int &armPort){
 	cout<<"\nSelect Connection Device"<<endl;
 	cout<<"Port"<<setw(20)<<"Name"<<endl;
 	
@@ -55,7 +55,7 @@ void selectPort(ifstream &in, int &drivePort, int &armPort, int sensorPort){
 	
 	cout << "\nEnter the drive, arm and driveSensor com ports you would like to use " << endl;
 	cout << "from the above list or any other port you would like to use." << endl;
-	cin >> drivePort >> armPort>>sensorPort;
+	cin >> drivePort >> armPort;
 }
 
 class DataCollector : public myo::DeviceListener {
@@ -90,7 +90,7 @@ public:
         onArm = false;
         isUnlocked = false;
     }
-	
+
 	void rollSpeed(float roll){
 		roll_w = static_cast<int>((roll + (float)M_PI/2.0f)/M_PI * 18);
 		if(!armOn&&!controllingDrive){
@@ -104,14 +104,16 @@ public:
 			lMotorSpeed= longSpeed[pitch_w];
 			rMotorSpeed = longSpeed[pitch_w];
 		} else if (armOn){
-			if(pitch_w<=5){
-    		   //arm.raise(longSpeed[pitch_w]);
+			//std::cout<<pitch_w<<endl;
+			if(pitch_w>8){
+               std::cout<<"Flag"<<endl;
+    		   arm.raise(longSpeed[pitch_w]);
 			}
 			else if(pitch_w>=9){
-				//arm.lower(longSpeed[pitch_w]);
+				arm.lower(longSpeed[pitch_w]);
 			}
 			else{
-				//arm.stop();
+				arm.stop();
 			}
 		}
 	}
@@ -153,6 +155,8 @@ public:
 		
 		//
 		drive.forward(lMotorSpeed,rMotorSpeed);
+		
+		//cout<<drive.leftDrive->rotation_count;
         roll_w = static_cast<int>((roll + (float)M_PI)/(M_PI * 2.0f) * 18);
        	pitch_w = static_cast<int>((pitch + (float)M_PI/2.0f)/M_PI * 18);
         yaw_w = static_cast<int>((yaw + (float)M_PI)/(M_PI * 2.0f) * 18); 
@@ -303,16 +307,17 @@ int main(int argc, char** argv)
 	ifstream comIn ("comports.txt");
 	cout<<"flag";
 	int driveCom = 0, armCom = 0, dSensorCom= 0;
-	selectPort(comIn, driveCom, armCom, dSensorCom);
+	selectPort(comIn, driveCom, armCom);
 	
 	try {
 	
 	cout << "Trying to connect" << endl;
     driveConnection->connect(driveCom);
     armConnection->connect(armCom);
-    driveSensorConnection->connect(dSensorCom);
+    //driveSensorConnection->connect(dSensorCom);
     cout << "Connected" << endl;
-    ArmLift arm (motorLiftArm,elevatorTouch);
+    arm.zeroEncoder();
+    //ArmLift arm (motorLiftArm,elevatorTouch);
     //claw.initialize();
 	
     myo::Hub hub("com.example.hello-myo");
@@ -330,9 +335,9 @@ int main(int argc, char** argv)
     DataCollector collector;
 	collector.initializeBools();
     hub.addListener(&collector);
-
     while (1) {
         hub.run(1000/15);
+        drive.leftDrive->get_output_state();
         collector.print();
     }
 	//driveConnection->disconnect();

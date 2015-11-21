@@ -9,6 +9,7 @@ using namespace std;
 
 Motor::Motor(){}
 
+
 Motor::Motor(Motor_port port, Connection *connection){
   this->port=port;
   this->connection = connection;
@@ -41,11 +42,11 @@ void Motor::get_output_state(){
   tacho_count = (0xFF & answer[15]) | ((0xFF & answer[16]) << 8)| ((0xFF & answer[17]) << 16)| ((0xFF & answer[18]) << 24);
   block_count = (0xFF & answer[19]) | ((0xFF & answer[20]) << 8)| ((0xFF & answer[21]) << 16)| ((0xFF & answer[22]) << 24);
   rotation_count = (0xFF & answer[19]) | ((0xFF & answer[20]) << 8)| ((0xFF & answer[21]) << 16)| ((0xFF & answer[22]) << 24);
-  //printf("Run state: %d\n", run_state);
-  //printf("Tacho limit: %d\n", tacho_limit);
-  //printf("Tacho count: %d\n", tacho_count);
-  //printf("Block tacho count: %d\n", block_count);
-  //printf("Rotation count: %d\n", rotation_count);
+  printf("Run state: %d\n", run_state);
+  printf("Tacho limit: %d\n", tacho_limit); //encoders
+  printf("Tacho count: %d\n", tacho_count); //encoders
+  printf("Block tacho count: %d\n", block_count);
+  printf("Rotation count: %d\n", rotation_count);
   //printf("\n");
   return;
 }

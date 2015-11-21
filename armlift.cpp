@@ -3,21 +3,25 @@ const int MAX_HEIGHT = 1000;
 
 ArmLift::ArmLift(Motor *motorA,Touch *touch){
 	liftMotor = motorA;
-	//elevatorTouch = touch;
-	//elevatorTouch->init();
-	//if(elevatorTouch->read()!= 1){
-		unlocked = true;
-		raise(-100);
-		cout<<"Lowering to bottom "<<endl;
-		//while(elevatorTouch->read()!=1)
-		raise(0);
-		//liftMotor->reset_rotation();
-		
+	elevatorTouch = touch;
 	unlocked = false;
 }
 
 ArmLift::ArmLift(){
 	unlocked=false;
+}
+
+void ArmLift::zeroEncoder() {
+	elevatorTouch->init();
+	if(elevatorTouch->read()!= 1){
+		unlocked = true;
+		liftMotor->on(-100);
+		cout<<"Lowering to bottom "<<endl;
+		while(elevatorTouch->read()!=1){
+		}
+		liftMotor->off();
+		liftMotor->reset_rotation();
+	}
 }
 
 
@@ -29,6 +33,8 @@ void ArmLift::raise(int velocity){
 		velocity*=-1;
 	}
 	//Powers the motor, if the elevator is below max height
+	//cout<<"Trying to go up"<<endl;
+	//cout<<"Encoder Reading:"<< liftMotor->get_rotation()<<endl;
 	if(liftMotor->get_rotation()+5<1000){
 				liftMotor->on(velocity);
 	} 
