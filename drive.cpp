@@ -7,43 +7,9 @@ Drive::Drive(Motor *motorA, Motor *motorB){
 }
 
 void Drive::forward(int lSpeed, int rSpeed){
-	//if (unlocked){
-		//cout << "hello";
+	if (unlocked){
 		leftDrive->on(lSpeed);
 		rightDrive->on(rSpeed);
-	//}
-}
-
-void Drive::reverse(int speed){
-	if (unlocked){
-		leftDrive->on(-speed);
-		rightDrive->on(-speed);
-	}
-}
-
-void Drive::turnLeft(int speed){
-	if (unlocked){
-		leftDrive->off();
-		rightDrive->on(speed);
-	}
-}
-
-void Drive::rotateCCW(int speed){
-		leftDrive->on(-speed);
-		rightDrive->on(speed);
-}
-
-void Drive::turnRight(int speed){
-	if (unlocked){
-		leftDrive->on(speed);
-		rightDrive->off();
-	}
-}
-
-void Drive::rotateCW(int speed){
-	if (unlocked){
-		leftDrive->on(speed);
-		rightDrive->on(-speed);
 	}
 }
 
@@ -55,4 +21,8 @@ void Drive::lockDrive(){
 	unlocked = false;
 	leftDrive->off();
 	rightDrive->off();
+}
+
+bool Drive::isUnlocked(){
+	return unlocked;
 }

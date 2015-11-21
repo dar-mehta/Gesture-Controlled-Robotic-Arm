@@ -136,6 +136,11 @@ bool Motor::is_running(){
     return false;
 }
 
+long int Motor::get_Encoder_Data(){
+	get_output_state();
+	return tacho_count;
+}
+
 long int Motor::get_rotation(){
   get_output_state();
   return rotation_count;

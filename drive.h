@@ -11,16 +11,10 @@ class Drive{
 		Drive(Motor*, Motor*);
 		
 		void forward(int,int);
-		void reverse(int);
-		
-		void turnLeft(int);
-		void rotateCCW(int);
-		
-		void turnRight(int);
-		void rotateCW(int);
 		
 		void unlockDrive();
 		void lockDrive();
+		bool isUnlocked();
 		
 		Motor *leftDrive;
 		Motor *rightDrive;

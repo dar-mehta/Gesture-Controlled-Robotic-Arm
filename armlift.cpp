@@ -5,14 +5,7 @@ ArmLift::ArmLift(Motor *motorA){
 	unlocked = true;
 }
 
-void ArmLift::raise(int speed){
-	if (unlocked){
-		liftArm->on(speed);
-	}
-}
-
-void ArmLift::lower(int speed){
-	if (unlocked){
+void ArmLift::raise(int speed){z
 		liftArm->on(-speed);
 	}
 }

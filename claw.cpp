@@ -12,14 +12,14 @@ Claw::Claw(Motor *motorA, Motor *motorC){
 void Claw::initialize(){
     clawMotor->reset_rotation(false);
 	rotateClawMotor->reset_rotation(false);
-	rotation = clawMotor->get_rotation();
+	rotation = 0;
 }
 
 void Claw::open(){
-	if (!clawIsOpen&& !rotated){
+	if (!clawIsOpen && !rotated){
 		clawMotor->on(-20);
 		clawIsOpen = true;
-		while(clawMotor->get_rotation()>rotation-90){}
+		while(clawMotor->get_rotation() < rotation+50){}
 		clawMotor->off();
 	}	
 }
@@ -28,9 +28,7 @@ void Claw::close(){
 	if (clawIsOpen){
 		clawMotor->on(20);
 		clawIsOpen = false;
-		while(clawMotor->get_rotation()<rotation){
-		cout<<"Claw:"<<clawMotor->get_rotation()<<"Goal"<< rotation<<endl;
-		}
+		while(clawMotor->get_rotation() > rotation){}
 		clawMotor->off();
 	}
 }
@@ -40,7 +38,7 @@ bool Claw::isOpen(){
 }
 
 void Claw::rotateClaw(int speed){
-	if(!clawIsOpen&&rotated)
+	if(!clawIsOpen && rotated)
 	rotateClawMotor->on(speed);
 }
 
