@@ -4,57 +4,51 @@ Claw::Claw(Motor *motorA, Motor *motorC){
 	clawMotor = motorA;
 	rotateClawMotor = motorC;
 	unlocked = true;
-	clawIsOpen = true;
+	isOpen = true;
 	rotated = false;
- 
 }
 
 void Claw::initialize(){
-    clawMotor->reset_rotation(false);
-	rotateClawMotor->reset_rotation(false);
-	rotation = 0;
+    clawMotor->reset_Encoder();
+	rotateClawMotor->reset_Encoder();
+	initClaw = clawMotor->get_Encoder();
+	initRotation = rotateClawMotor->get_Encoder();
 }
 
 void Claw::open(){
-	if (!clawIsOpen && !rotated){
+	if (!isOpen && !rotated){
 		clawMotor->on(-20);
-		clawIsOpen = true;
-		while(clawMotor->get_rotation() < rotation+50){}
+		int currentPos = clawMotor->get_Encoder()-initClaw;
+		int i = 0;
+		while(currentPos < rotation+120){
+			i++;
+			if(i%2==0){
+				currentPos = clawMotor->get_Encoder()-initClaw;
+			}
+		}
 		clawMotor->off();
+		isOpen = true;
 	}	
 }
 
 void Claw::close(){
-	if (clawIsOpen){
+	if (isOpen){
 		clawMotor->on(20);
-		clawIsOpen = false;
-		while(clawMotor->get_rotation() > rotation){}
+		while(clawMotor->get_Encoder() > rotation){}
 		clawMotor->off();
+		isOpen = false;
 	}
 }
 
-bool Claw::isOpen(){
-	return clawIsOpen;
-}
-
-void Claw::rotateClaw(int speed){
-	if(!clawIsOpen && rotated)
+void Claw::rotate(int speed){
+	if(!isOpen && !rotated)
 	rotateClawMotor->on(speed);
 }
 
-void Claw::unlockClaw(){
-	unlocked = true;
-}
-
-void Claw::lockClaw(){
-	unlocked = false;
+void Claw::unlockClaw(bool unLock){
+	unlocked = unLock;
 	clawMotor->off();
 	rotateClawMotor->off();
-}
-
-
-long Claw::getRotatePosition(){
-	return rotateClawMotor->get_rotation();
 }
 
 bool Claw::isUnlocked(){

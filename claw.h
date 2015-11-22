@@ -14,21 +14,18 @@ class Claw{
 		
 		void open();
 		void close();
-		bool isOpen();
 		
-		void rotateClaw(int);
+		void rotate(int);
 		
-		void unlockClaw();
-		void lockClaw();
-		
-		long getRotatePosition();
+		void unlockClaw(bool);
 		bool isUnlocked();
 		
 		
 		
 		Motor *clawMotor;
 		Motor *rotateClawMotor;
-		bool unlocked, clawIsOpen, rotated;
+		bool unlocked, isOpen, rotated;
+		int initClaw, initRotation;
 		long rotation;
 };
 #endif

@@ -31,13 +31,19 @@ Motor *motorLiftArm = new Motor (OUT_B, driveConnection);
 Motor *motorToggleClaw = new Motor (OUT_A, armConnection);
 Motor *motorRotateClaw = new Motor (OUT_C, armConnection);
 
+Touch *elevatorTouch = new Touch(IN_1, driveConnection);
+
 Drive drive(motorLeftDrive, motorRightDrive);
-ArmLift arm (motorLiftArm);
+ArmLift arm (motorLiftArm, elevatorTouch);
 Claw claw (motorToggleClaw, motorRotateClaw);
 
 float motor_speed = 0;
 const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40, -75};
 const double latSpeed[9]={1,0.80,0.60,0,0,0,-0.60,-0.80,-1};
+
+
+
+bool controllingDrive, controllingArm, controllingClaw;
 
 void selectPort(ifstream &in, int &drivePort, int &armPort){
 	cout<<"\nSelect Connection Device"<<endl;
@@ -58,9 +64,8 @@ void selectPort(ifstream &in, int &drivePort, int &armPort){
 class DataCollector : public myo::DeviceListener {
 private:
 		
-		boolean armOn, driveOn, controllingDrive, controllingClaw, onInit;
+		bool onInit;
 		int yawInit, index, lMotorSpeed, rMotorSpeed;
-		char ch;
 			
 public:
     DataCollector()
@@ -70,9 +75,8 @@ public:
     
     void initialize(){
     	onInit = true;
-    	armOn = false;
-    	driveOn = false;
-    	controllingDrive = false;
+    	controllingDrive = true;
+    	controllingArm = false;
     	controllingClaw = false;
     	index=4;
     	yawInit=0;
@@ -90,21 +94,20 @@ public:
         isUnlocked = false;
     }
 	
-	//unimplimented
 	void rollSpeed(float roll){
 		roll_w = static_cast<int>((roll + (float)M_PI/2.0f)/M_PI * 18);
-		if(!arm.isUnlocked() && !controllingDrive){
-			cout<<"int-cast roll reading:"<<roll_w<<endl;
+		if(controllingClaw && claw.isUnlocked()){
+			cout<<"ROTATE CLAW HERE!"<<endl;
+			claw.rotate(20);
 		}
 	}
 	
 	void longitudinalSpeed (float pitch){
 		int pitch_w = static_cast<int>((pitch + (float)M_PI/2.0f)/M_PI * 18);
-		//if driving and drive is unlocked
 		if (controllingDrive && drive.isUnlocked()){
 			lMotorSpeed = rMotorSpeed = longSpeed[pitch_w];
-		} else if (!controllingDrive && arm.isUnlocked()){
-			arm.raise(longSpeed[pitch_w]);
+		} else if (controllingArm && arm.isUnlocked()){
+			arm.move(longSpeed[pitch_w]);
 		}
 	}
 	
@@ -139,13 +142,14 @@ public:
 		
 		longitudinalSpeed(pitch);
 		lateralSpeed(yaw);
-		
+		rollSpeed(roll);
 		
 		drive.forward(lMotorSpeed, rMotorSpeed);
+		
         /*roll_w = static_cast<int>((roll + (float)M_PI)/(M_PI * 2.0f) * 18);
        	pitch_w = static_cast<int>((pitch + (float)M_PI/2.0f)/M_PI * 18);
         yaw_w = static_cast<int>((yaw + (float)M_PI)/(M_PI * 2.0f) * 18); 
-		index = yaw_w-yawInit+4;*/  
+		index = yaw_w-yawInit+4;*/
     }
 
     void onPose(myo::Myo* myo, uint64_t timestamp, myo::Pose pose)
@@ -155,14 +159,14 @@ public:
         if (pose != myo::Pose::unknown && pose != myo::Pose::rest) {
             myo->unlock(myo::Myo::unlockHold);
 			
-			if (!controllingDrive && !arm.isUnlocked()){   
+			if (controllingClaw && !claw.isUnlocked()){   
 				if(pose == myo::Pose::fingersSpread){
 					cout<<"Confirm Open Claw Request: "<<endl;
 					switch (getch()){
 						case 'y':
 							claw.open();
 							break;
-						case default:
+						default:
 							std::cout << "Cancelling open claw request." << endl;
 							break;	
 					}
@@ -171,12 +175,7 @@ public:
 					claw.close();
 				}
 			}
-			
-			if (pose == myo::Pose::fist && controllingClaw claw.isunlocked()){
-				
-			}
-			
-			
+		
 			if (pose == myo::Pose::doubleTap){
 				myo->lock();
 			}
@@ -252,6 +251,7 @@ public:
 
 int main(int argc, char** argv)
 {
+	char ch;
 	ifstream comIn ("comports.txt");
 	int driveCom = 0, armCom = 0;
 	selectPort(comIn, driveCom, armCom);
@@ -262,7 +262,7 @@ int main(int argc, char** argv)
     driveConnection->connect(driveCom);
     armConnection->connect(armCom);
     cout << "Connected" << endl;
-    claw.initialize();
+	arm.initialize();
 	
     myo::Hub hub("com.example.hello-myo");
 
@@ -284,37 +284,36 @@ int main(int argc, char** argv)
         hub.run(1000/15);
         collector.print();
         if (kbhit()){
-        	char ch = getch();
+        	ch = getch();
 			switch (ch){
 				case 32:
-					if(driveOn==armOn){
-						driveOn=!driveOn;
-					}
-					driveOn = !driveOn;f
-					std::cout << std::boolalpha << "Drive Control: " << driveOn << std::endl;
-					armOn = !armOn;
-					std::cout << std::boolalpha << "Arm Control: " << armOn << std::endl;
+					drive.unlockDrive(!drive.isUnlocked());
+					arm.unlockArm(!arm.isUnlocked());
+					std::cout << std::boolalpha << "Drive Control: " << drive.isUnlocked() << std::endl;
+					std::cout << std::boolalpha << "Arm Control: " << arm.isUnlocked() << std::endl;
 				 	break;
 				case 'a':
 					controllingArm = true;
 					controllingDrive = false;
-					controllingClaw = true;
+					drive.unlockDrive(!drive.isUnlocked());
+					controllingClaw = false;
 					std::cout << std::boolalpha << "Controlling Arm!" << std::endl;
 					break;
 				case 's':
 					controllingArm = false;
-					controllingDrive = true;
+					arm.unlockArm(!arm.isUnlocked());
+					controllingDrive = false;
+					drive.unlockDrive(!drive.isUnlocked());
 					controllingClaw = true;
 					std::cout << std::boolalpha << "Controlling Claw!" << std::endl;
 				 	break;
 				case 'd':
 					controllingDrive = true;
 					controllingArm = false;
-					controllingClaw = true;
+					arm.unlockArm(!arm.isUnlocked());
+					controllingClaw = false;
 					std::cout << std::boolalpha << "Controlling Drive!" << std::endl;
 				 	break;
-				case 'k':
-					killRobot();
 			}	
 		}
     }
@@ -324,7 +323,8 @@ int main(int argc, char** argv)
         std::cerr << "Error: " << e.what() << std::endl;
         std::cerr << "Press enter to continue.";
         std::cin.ignore();
-        drive.forward(0, 0);
+        drive.unlockDrive(false);
+        arm.unlockArm(false);
         driveConnection->disconnect();
         armConnection->disconnect();
         return 1;

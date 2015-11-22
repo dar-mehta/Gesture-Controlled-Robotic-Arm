@@ -111,11 +111,13 @@ class Motor{
     * @param reply [true = require reply from NXT; false = no reply from NXT]
     */
     void reset_rotation(bool reply=false);
-
+	void reset_Encoder();
     /**
     * Get the position of the motor
     * @return the position of the motor
     */
+    long int get_Encoder();
+    
     long int get_rotation();
 
     /**

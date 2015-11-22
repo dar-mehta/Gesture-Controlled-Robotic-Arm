@@ -136,9 +136,17 @@ bool Motor::is_running(){
     return false;
 }
 
-long int Motor::get_Encoder_Data(){
-	get_output_state();
-	return tacho_count;
+void Motor::reset_Encoder(){
+  unsigned char command[15];
+  command[10]=0;//TachoLimit
+  command[11]=0 >> 8;//TachoLimit
+  command[12]=0 >> 16;//TachoLimit
+  command[13]=0 >> 24;//TachoLimit
+}
+
+long int Motor::get_Encoder(){
+  get_output_state();
+  return tacho_count;
 }
 
 long int Motor::get_rotation(){

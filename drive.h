@@ -12,8 +12,7 @@ class Drive{
 		
 		void forward(int,int);
 		
-		void unlockDrive();
-		void lockDrive();
+		void unlockDrive(bool);
 		bool isUnlocked();
 		
 		Motor *leftDrive;

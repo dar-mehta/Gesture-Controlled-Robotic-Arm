@@ -1,24 +1,58 @@
 #include "armlift.h"
+const int MAX_HEIGHT = -11000;
+const int MIN_HEIGHT = -100;
 
-ArmLift::ArmLift(Motor *motorA){
-	liftArm = motorA;
-	unlocked = true;
-}
-
-void ArmLift::raise(int speed){z
-		liftArm->on(-speed);
-	}
-}
-
-void ArmLift::unlockArm(){
-	unlocked = true;
-}
-
-void ArmLift::lockArm(){
+ArmLift::ArmLift(Motor *motorA,Touch *touch){
+	liftMotor = motorA;
+	elevatorTouch = touch;
 	unlocked = false;
-	liftArm->off();
+}
+
+ArmLift::ArmLift(){
+	unlocked=false;
+}
+
+void ArmLift::initialize() {
+	elevatorTouch->init();
+	if(elevatorTouch->read()!= 1){
+		unlocked = true;
+		liftMotor->on(100);
+		cout<<"Lowering to bottom "<<endl;
+		while(elevatorTouch->read()!=1){}
+		liftMotor->off();
+	}
+	liftMotor->reset_Encoder();
+	i=0;
+}
+
+//Void Function, raises arm at specified velocity. 
+//Note: velocity must be positive.
+void ArmLift::move(int velocity){
+	i++;
+	if(i%3 == 0){
+		encoder = liftMotor->get_Encoder();
+	}
+	
+	if (velocity < 0 && encoder > MAX_HEIGHT){
+		liftMotor->on(velocity);
+	} else if (velocity > 0 && encoder < MIN_HEIGHT && elevatorTouch->read() != 1){
+		liftMotor->on(velocity);
+	} else {
+		liftMotor->on(0);
+	}
+	
+	if (elevatorTouch->read() == 1){
+		liftMotor->reset_Encoder();
+	}
+	
+}
+
+void ArmLift::unlockArm(bool unLock){
+	unlocked = unLock;
+	liftMotor->off();
 }
 
 bool ArmLift::isUnlocked(){
 	return unlocked;
 }
+
