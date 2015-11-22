@@ -97,8 +97,8 @@ public:
 	void rollSpeed(float roll){
 		roll_w = static_cast<int>((roll + (float)M_PI/2.0f)/M_PI * 18);
 		if(controllingClaw && claw.isUnlocked()){
-			cout<<"ROTATE CLAW HERE!"<<endl;
-			claw.rotate(20);
+			//cout<<"ROTATE CLAW HERE!"<<endl;
+			claw.rotate(longSpeed[roll_w+15]);
 		}
 	}
 	
@@ -159,7 +159,7 @@ public:
         if (pose != myo::Pose::unknown && pose != myo::Pose::rest) {
             myo->unlock(myo::Myo::unlockHold);
 			
-			if (controllingClaw && !claw.isUnlocked()){   
+			if (controllingClaw && claw.isUnlocked()){   
 				if(pose == myo::Pose::fingersSpread){
 					cout<<"Confirm Open Claw Request: "<<endl;
 					switch (getch()){
@@ -263,6 +263,7 @@ int main(int argc, char** argv)
     armConnection->connect(armCom);
     cout << "Connected" << endl;
 	arm.initialize();
+	claw.initialize();
 	
     myo::Hub hub("com.example.hello-myo");
 
@@ -305,6 +306,7 @@ int main(int argc, char** argv)
 					controllingDrive = false;
 					drive.unlockDrive(!drive.isUnlocked());
 					controllingClaw = true;
+					claw.unlockClaw(true);
 					std::cout << std::boolalpha << "Controlling Claw!" << std::endl;
 				 	break;
 				case 'd':

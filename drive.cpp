@@ -15,8 +15,8 @@ void Drive::forward(int lSpeed, int rSpeed){
 
 void Drive::unlockDrive(bool unLock){
 	unlocked = unLock;
-	leftDrive->off();
-	rightDrive->off();
+	leftDrive->stop();
+	rightDrive->stop();
 }
 
 bool Drive::isUnlocked(){
