@@ -8,6 +8,7 @@
 };*/
 class Drive{
 	public :
+		Drive();
 		Drive(Motor*, Motor*);
 		
 		void forward(int,int);
