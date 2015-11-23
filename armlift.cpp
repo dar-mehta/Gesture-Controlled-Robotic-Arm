@@ -20,8 +20,8 @@ void ArmLift::initialize() {
 		liftMotor->on(100);
 		cout<<"Lowering to bottom "<<endl;
 		while(elevatorTouch->read()!=1){}
-		liftMotor->stop();
 	}
+	liftMotor->off();
 	liftMotor->reset_Encoder();
 	cout << liftMotor->get_Encoder();
 	i=0;
@@ -33,7 +33,7 @@ void ArmLift::move(int velocity){
 	i++;
 	if(i%3 == 0){
 		encoder = liftMotor->get_Encoder();
-		cout << encoder << endl;
+		//cout << encoder << endl;
 	}
 	
 	if (velocity < 0 && encoder > MAX_HEIGHT){

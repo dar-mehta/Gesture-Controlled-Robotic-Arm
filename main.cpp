@@ -64,8 +64,8 @@ void selectPort(ifstream &in, int &drivePort, int &armPort){
 class DataCollector : public myo::DeviceListener {
 private:
 		
-		bool onInit;
-		int yawInit, index, lMotorSpeed, rMotorSpeed;
+		bool onInit, onRollInit;
+		int rollInit, yawInit, index, lMotorSpeed, rMotorSpeed, target;
 			
 public:
     DataCollector()
@@ -75,13 +75,16 @@ public:
     
     void initialize(){
     	onInit = true;
+    	onRollInit = true;
     	controllingDrive = true;
     	controllingArm = false;
     	controllingClaw = false;
     	index=4;
     	yawInit=0;
+    	rollInit=0;
     	lMotorSpeed=0;
     	rMotorSpeed = 0;
+    	target = 0;
 	}
 	
     void onUnpair(myo::Myo* myo, uint64_t timestamp)
@@ -96,9 +99,19 @@ public:
 	
 	void rollSpeed(float roll){
 		roll_w = static_cast<int>((roll + (float)M_PI/2.0f)/M_PI * 18);
+		if(onRollInit){
+			rollInit = roll_w;
+			onRollInit = false;
+			cout << "FLAG" << endl;
+		}
+		target = roll_w - rollInit;
+		//cout << "TARGET!!!!: " << target << endl;
 		if(controllingClaw && claw.isUnlocked()){
-			//cout<<"ROTATE CLAW HERE!"<<endl;
-			claw.rotate(longSpeed[roll_w+15]);
+			if(target<=2){
+				claw.rotate(0);
+			} else if (target <= 11){
+				claw.rotate((target - 2) *12);
+			}
 		}
 	}
 	
@@ -176,9 +189,9 @@ public:
 				}
 			}
 		
-			if (pose == myo::Pose::doubleTap){
+			/*if (pose == myo::Pose::doubleTap){
 				myo->lock();
-			}
+			}*/
 
             myo->notifyUserAction();
         } else {
@@ -290,29 +303,25 @@ int main(int argc, char** argv)
 				case 32:
 					drive.unlockDrive(!drive.isUnlocked());
 					arm.unlockArm(!arm.isUnlocked());
+					claw.unlockClaw(!claw.isUnlocked());
 					std::cout << std::boolalpha << "Drive Control: " << drive.isUnlocked() << std::endl;
 					std::cout << std::boolalpha << "Arm Control: " << arm.isUnlocked() << std::endl;
 				 	break;
 				case 'a':
 					controllingArm = true;
 					controllingDrive = false;
-					drive.unlockDrive(!drive.isUnlocked());
 					controllingClaw = false;
 					std::cout << std::boolalpha << "Controlling Arm!" << std::endl;
 					break;
 				case 's':
 					controllingArm = false;
-					arm.unlockArm(!arm.isUnlocked());
 					controllingDrive = false;
-					drive.unlockDrive(!drive.isUnlocked());
 					controllingClaw = true;
-					claw.unlockClaw(true);
 					std::cout << std::boolalpha << "Controlling Claw!" << std::endl;
 				 	break;
 				case 'd':
-					controllingDrive = true;
 					controllingArm = false;
-					arm.unlockArm(!arm.isUnlocked());
+					controllingDrive = true;
 					controllingClaw = false;
 					std::cout << std::boolalpha << "Controlling Drive!" << std::endl;
 				 	break;

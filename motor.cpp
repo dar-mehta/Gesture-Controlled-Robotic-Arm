@@ -16,6 +16,7 @@ Motor::Motor(Motor_port port, Connection *connection){
   //reg_mode = MOTOR_SPEED;
   //run_state = RUN_IDLE;
   //turnratio = 100;
+  
 }
 
 void Motor::get_output_state(){
@@ -137,11 +138,15 @@ bool Motor::is_running(){
 }
 
 void Motor::reset_Encoder(){
-  unsigned char command[15];
-  command[10]=0;//TachoLimit
-  command[11]=0 >> 8;//TachoLimit
-  command[12]=0 >> 16;//TachoLimit
-  command[13]=0 >> 24;//TachoLimit
+  unsigned char resetMotorPos[6];
+  //unsigned char nxtAnswer[NXT_BUFFER_SIZE];
+  resetMotorPos[0]= 4;
+  resetMotorPos[1] = 0x00;
+  resetMotorPos[2]= 0x80;
+  resetMotorPos[3] = 0x0A;
+  resetMotorPos[4]= port;
+  resetMotorPos[5]= false;
+  connection->send(&resetMotorPos[0], 6);
 }
 
 long int Motor::get_Encoder(){

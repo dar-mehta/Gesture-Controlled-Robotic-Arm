@@ -27,6 +27,6 @@ class Claw{
 		bool unlocked, isOpen, rotated;
 		int initClaw, initRotation, i;
 		long rotation;
-		long int encoder, initEncoder;
+		long int clawEncoder, rotationEncoder, initClawEncoder, initRotateEncoder;
 };
 #endif
