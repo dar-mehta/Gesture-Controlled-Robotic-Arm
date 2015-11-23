@@ -11,6 +11,7 @@ Claw::Claw(Motor *motorA, Motor *motorC){
 void Claw::initialize(){
 	clawMotor->off();
 	clawMotor->reset_Encoder();
+	rotateClawMotor->reset_Encoder();
 	initEncoder = clawMotor->get_Encoder();
 	cout<<clawMotor->get_Encoder()<<endl;
 }
@@ -63,9 +64,25 @@ void Claw::close(){
 	}
 }
 
-void Claw::rotate(int speed){
-	if(!isOpen && !rotated);
-	rotateClawMotor->on(speed);
+//void Claw::rotate(int speed){
+//	if(!isOpen && !rotated);
+//	rotateClawMotor->on(speed);
+//}
+
+void Claw::rotate(int target){
+	if(!isOpen){
+		if(rotateClawMotor->get_Encoder()< target- 10){
+			rotateClawMotor->on(15);
+		}
+		else if(rotateClawMotor->get_Encoder()> target+10){
+			rotateClawMotor->on(15);
+		}
+		else{
+			rotateClawMotor->off();
+		}
+		
+	}
+	
 }
 
 void Claw::unlockClaw(bool unLock){
