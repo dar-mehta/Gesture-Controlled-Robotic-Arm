@@ -31,7 +31,7 @@ void ArmLift::initialize() {
 //Note: velocity must be positive.
 void ArmLift::move(int velocity){
 	i++;
-	if(i%3 == 0){
+	if(i%5 == 0){
 		encoder = liftMotor->get_Encoder();
 		//cout << encoder << endl;
 	}

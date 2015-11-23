@@ -106,12 +106,10 @@ public:
 		}
 		target = roll_w - rollInit;
 		//cout << "TARGET!!!!: " << target << endl;
-		if(controllingClaw && claw.isUnlocked()){
-			if(target<=2){
-				claw.rotate(0);
-			} else if (target <= 11){
-				claw.rotate((target - 2) *12);
-			}
+		if(target<=2){
+			claw.rotate(0);
+		} else if (target <= 11){
+			claw.rotate((target - 2) *12);
 		}
 	}
 	
@@ -130,12 +128,9 @@ public:
 			yawInit = yaw_w;
 			onInit=false;
 		}
-		
-		if (controllingDrive && drive.isUnlocked()){
-	        index = yaw_w - yawInit + 4;
-	        lMotorSpeed+=(100-fabs(lMotorSpeed))*(latSpeed[index]);
-	        rMotorSpeed+=-(100-fabs(rMotorSpeed))*latSpeed[index];
-		}
+        index = yaw_w - yawInit + 4;
+        lMotorSpeed+=(100-fabs(lMotorSpeed))*(latSpeed[index]);
+        rMotorSpeed+=-(100-fabs(rMotorSpeed))*latSpeed[index];
 	}
 	
     void onOrientationData(myo::Myo* myo, uint64_t timestamp, const myo::Quaternion<float>& quat)
@@ -145,19 +140,21 @@ public:
         using std::sqrt;
         using std::max;
         using std::min;
-
-        float roll = atan2(2.0f * (quat.w() * quat.x() + quat.y() * quat.z()),
+		
+		if (controllingClaw && claw.isUnlocked()){
+			float roll = atan2(2.0f * (quat.w() * quat.x() + quat.y() * quat.z()),
                            1.0f - 2.0f * (quat.x() * quat.x() + quat.y() * quat.y()));
-        float pitch = asin(max(-1.0f, min(1.0f, 2.0f * (quat.w() * quat.y() - quat.z() * quat.x()))));
-        float yaw = atan2(2.0f * (quat.w() * quat.z() + quat.x() * quat.y()),
+						   rollSpeed(roll);	
+		} else {
+			float pitch = asin(max(-1.0f, min(1.0f, 2.0f * (quat.w() * quat.y() - quat.z() * quat.x()))));
+			longitudinalSpeed(pitch);
+		}
+        if (controllingDrive && drive.isUnlocked()){
+			float yaw = atan2(2.0f * (quat.w() * quat.z() + quat.x() * quat.y()),
                         1.0f - 2.0f * (quat.y() * quat.y() + quat.z() * quat.z()));
-                     
-		
-		longitudinalSpeed(pitch);
-		lateralSpeed(yaw);
-		rollSpeed(roll);
-		
-		drive.forward(lMotorSpeed, rMotorSpeed);
+			lateralSpeed(yaw);
+			drive.forward(lMotorSpeed, rMotorSpeed);
+		}
 		
         /*roll_w = static_cast<int>((roll + (float)M_PI)/(M_PI * 2.0f) * 18);
        	pitch_w = static_cast<int>((pitch + (float)M_PI/2.0f)/M_PI * 18);

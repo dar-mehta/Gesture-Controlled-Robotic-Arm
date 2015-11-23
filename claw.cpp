@@ -1,4 +1,5 @@
 #include "claw.h"
+#include <cmath>
 
 Claw::Claw(Motor *motorA, Motor *motorC){
 	clawMotor = motorA;
@@ -6,6 +7,7 @@ Claw::Claw(Motor *motorA, Motor *motorC){
 	unlocked = true;
 	isOpen = true;
 	rotated = false;
+	TOL = -20;
 }
 
 void Claw::initialize(){
@@ -22,9 +24,10 @@ void Claw::initialize(){
 
 void Claw::open(){
 	if (!isOpen && !rotated && unlocked){
-		
+		int j = 0;
 		clawMotor->on(20);
-		while(clawEncoder-initClawEncoder < 120){
+		while(fabs(clawEncoder-initClawEncoder) - 120 < TOL && j< 250){
+			j++;
 			if (i%5 == 0){
 				clawEncoder = clawMotor->get_Encoder();
 				//cout << clawMotor->get_Encoder() << endl;
@@ -41,7 +44,9 @@ void Claw::close(){
 	if (isOpen && unlocked){
 		
 		clawMotor->on(-20);
-		while(clawEncoder - initClawEncoder > -120){
+		int j = 0;
+		while(fabs(clawEncoder - initClawEncoder) - 120 < TOL && j<250){
+			j++;
 			if (i%5 == 0){
 				clawEncoder = clawMotor->get_Encoder();
 				//cout << clawMotor->get_Encoder() << endl;
@@ -56,6 +61,7 @@ void Claw::close(){
 
 void Claw::rotate(int target){
 	if(unlocked){
+		
 		if (i%5 == 0){
 			rotationEncoder = rotateClawMotor->get_Encoder();
 			i++;	
@@ -65,7 +71,7 @@ void Claw::rotate(int target){
 			rotateClawMotor->on(10);
 		}
 		else if(rotationEncoder - initRotateEncoder> target + 6){
-			rotateClawMotor->on(-10);
+			rotateClawMotor->on(-15);
 		}
 		else{
 			rotateClawMotor->off();
