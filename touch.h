@@ -14,6 +14,8 @@ class Touch : public Sensor{
      * @param port [which sensor port to use]
      * @param *connection [attach a connection]
     */
+  
+  	
     Touch(Sensor_port port, Connection* connection):Sensor(port, connection, TOUCH, BOOL_MODE){}
     ~Touch(){}
 

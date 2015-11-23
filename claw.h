@@ -8,6 +8,7 @@
 };*/
 class Claw{
 	public :
+		Claw();
 		Claw(Motor*, Motor*);
 		
 		void initialize();

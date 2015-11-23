@@ -1,6 +1,12 @@
 #include "claw.h"
 #include <cmath>
 
+Claw::Claw(){
+	unlocked=true;
+	isOpen=true;
+	rotated=false;
+	TOL = -20;
+} 
 Claw::Claw(Motor *motorA, Motor *motorC){
 	clawMotor = motorA;
 	rotateClawMotor = motorC;
