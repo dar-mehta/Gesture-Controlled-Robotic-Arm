@@ -45,6 +45,58 @@ const double latSpeed[9]={1,0.80,0.60,0,0,0,-0.60,-0.80,-1};
 
 bool controllingDrive, controllingArm, controllingClaw;
 
+// TEST FUNCTION
+/*
+bool isWorking()
+{
+	bool allgood = true;
+	//START OF TESTS
+	
+	Drive::forward(75, 75);
+	//check if encoder values increased
+	//include timer functionality
+	
+	Drive::forward(-75, -75);
+	//check if encoder values decreased
+	//include timer functionality
+	
+	Claw::open();
+	//check claw encoder values
+	
+	Claw::close();
+	//check claw encoder values
+	
+	Claw::rotate(70);
+	//wait some time before comparing encoder values
+	
+	if(Claw::rotationEncoder <= 65 && Claw::rotationEncoder >= 75){
+		allgood = false;
+	}
+	
+	Claw::rotate(0);
+	
+	if(Claw::rotationEncoder <= -5 && Claw::rotationEncoder >= 5){
+		allgood = false;
+	}
+	
+	ArmLift::move(100);
+	//use timer to run elevator and check if motor values are positive or negative
+	//check if encoder values increased
+	
+	ArmLift::move(-100);
+	//use timer to run elevator and check if motor values are positive or negative
+	//check if encoder value is back to around 0
+	
+	
+	
+	
+	
+	//END OF TESTS
+	return allgood;
+}
+*/
+
+
 void selectPort(ifstream &in, int &drivePort, int &armPort){
 	cout<<"\nSelect Connection Device"<<endl;
 	cout<<"Port"<<setw(20)<<"Name"<<endl;
@@ -338,4 +390,3 @@ int main(int argc, char** argv)
         return 1;
     }
 }
-
