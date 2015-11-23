@@ -88,13 +88,9 @@
 	        std::cerr << "Error: " << e.what() << std::endl;
 	        std::cerr << "Press enter to continue.";
 	        std::cin.ignore();
-	        drive.unlockDrive(false);
-	        arm.unlockArm(false);
 	        driveConnection->disconnect();
 	        armConnection->disconnect();
-	        //return false;
     		}
- 	    //return true;
     }
     
     int Controller::getControlSystem(){
@@ -186,8 +182,9 @@
 	collector->initialize(this);
    	cout << "FALG AFTER" << endl;
     hub.addListener(collector);
+    cout << "FLAGGG" << endl;
     while (1) {
-        hub.run(1000/15);
+        hub.runOnce(1000/15);
         collector->print();
         if (kbhit()){
         	ch = getch();

@@ -10,7 +10,7 @@
 
 #include <myo.hpp>
 #include "controller.h"
-//#include "datacollector.h"
+#include "datacollector.h"
 
 #include <cstdlib>
 #include <conio.h>
