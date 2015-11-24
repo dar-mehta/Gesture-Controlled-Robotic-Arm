@@ -36,6 +36,108 @@ const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40,
 
 	}
 	
+	bool test(){
+		
+		std::clock_t start;
+    	double duration = 0;
+    	start = std::clock();
+    	drive.forward(50,50);
+    	int encoderA = drive.leftDrive->get_Encoder();
+    	int encoderB = drive.rightDrive->get_Encoder();
+    	while (duration < 3)
+    	{
+    	//test motot functionality by running. They should only run for the 3 seconds that this loop should last
+    	
+    	duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+		}		
+		drive.forward(0,0);
+		if(!(drive.leftDrive->get_Encoder() > encoderA && drive.rightDrive->get_Encoder >encoderB)){
+			std::cout<< "Test failed at drive forward"<<endl;
+			return false;
+		}
+		
+		
+		duration = 0;
+		encoderA = drive.leftDrive->get_Encoder();
+    	encoderB = drive.rightDrive->get_Encoder();
+		start = std::clock();
+		drive.forward(-50,-50);		
+		while (duration < 3)
+    	{
+    	duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+		}
+		drive.forward(0,0);
+		if(!(drive.leftDrive->get_Encoder() < encoderA && drive.rightDrive->get_Encoder < encoderB)){
+			std::cout<< "Test failed at drive backwards"<<endl;
+			return false;
+		}
+		
+		
+		duration = 0;
+		encoderA = arm.liftMotor->get_Encoder();
+		start = std::clock();
+		arm.move(50);
+		while (duration < 3)
+    	{
+    	//test motot functionality by running. They should only run for the 3 seconds that this loop should last
+    	
+    	duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+		}		
+		arm.move(0);
+		if(arm.liftMotor->get_Encoder() > encoderA){
+			std::cout<< "Test failed at lift arm"<<endl;
+			return false;
+		}
+		
+		
+		duration = 0;
+		encoderA = arm.liftMotor->get_Encoder();
+		start = std::clock();
+		arm.move(-50);
+		while (duration < 3)
+    	{
+    	//test motot functionality by running. They should only run for the 3 seconds that this loop should last
+    	
+    	duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+		}		
+		arm.move(0);
+		if(arm.liftMotor->get_Encoder() < encoderA){
+			std::cout<< "Test failed at lower arm"<<endl;
+			return false;
+		}
+		
+		duration = 0;
+		encoderA = claw.rotateClawMotor->get_Encoder();
+		start = std::clock();
+		claw.rotate(100);
+		while (duration < 3)
+    	{
+    	duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+		}		
+		if(claw.rotateClawMotor->get_Encoder() > encoderA){
+			std::cout<< "Test failed at rotateClaw"<<endl;
+			return false;
+		}
+ 		//return claw
+		duration = 0;
+		encoderA = claw.rotateClawMotor->get_Encoder();
+		start = std::clock();
+		arm.move(0);
+		while (duration < 2)
+    	{
+    	duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+		}		
+	
+		if(arm.liftMotor->get_Encoder() < encoderA){
+			std::cout<< "Test failed at untip Claw"<<endl;
+			return false;
+			
+		
+		}
+		
+				  
+	}
+	
 	void Controller::selectPort(ifstream &in, int &drivePort, int &armPort){
 	std::cout<<"\nSelect Connection Device"<<std::endl;
 	std::cout<<"Port"<<setw(20)<<"Name"<<std::endl;
@@ -59,9 +161,9 @@ const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40,
 		try{
 	
 			std::cout << "Trying to connect" << std::endl;
-			cout<<"Flag1";
+			//cout<<"Flag1";
 	    	driveConnection->connect(driveCom);
-	    	cout<<"Flag2";
+	    	//cout<<"Flag2";
 	    	armConnection->connect(armCom);
 	    	std::cout << "Connected" <<std::endl;
 	    	
@@ -164,32 +266,33 @@ const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40,
 	void Controller::setPose(int pose){
 		if(controllingClaw){
 			if(pose == 0){
-					std::cout<<"Confirm Open Claw Request: "<<std::endl;
+					std::cout<<"\n Confirm Open Claw Request: "<<std::endl;
 					claw.rotateClawMotor->off();
 					switch (getch()){
 						case 'y':
 							claw.open();
 							break;
 						default:
-							std::cout << "Cancelling open claw request." << std::endl;
+							std::cout << "\nCancelling open claw request." << std::endl;
 							break;	
 					}
 			} 
 			else if(pose == 1){	
-						std::cout<<"Closing Claw";
+						std::cout<<"Closing Claw"<<endl;
 						claw.close();
+						std::cout<<"Claw Closed"<<endl;;
 			}
 		}
 	}
    
    	void Controller::runRobot(){
    	char ch;
-   	cout << "FALG BEFORE" << endl;
+   	//cout << "FALG BEFORE" << endl;
    	DataCollector collector;
 	collector.initialize(this);
-   	cout << "FALG AFTER" << endl;
+   	//cout << "FALG AFTER" << endl;
     hub.addListener(&collector);
-    cout << "FLAGGG" << endl;
+    //cout << "FLAGGG" << endl;
     while (1) {
         hub.runOnce(1000/15);
         collector.print();

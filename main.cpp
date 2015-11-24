@@ -52,7 +52,11 @@ int main(int argc, char** argv)
 		cout << "FLAGGGG" << endl;
 		return -1;
 	}*/
-	cout << "FALGG" << endl;
+	//cout << "FALGG" << endl;
+//	if(!robotControl.test()){
+//		cout<< "testing function failed";
+//	}
+	
 	robotControl.runRobot();
 	return 0;
 }
