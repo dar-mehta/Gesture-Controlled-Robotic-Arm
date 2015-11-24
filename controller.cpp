@@ -36,6 +36,7 @@ const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40,
     	controllingClaw = false;
     	onRollInit = true;
     	onYawInit = true;
+    	exit = false;
 
 	}
 	
@@ -287,6 +288,13 @@ const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40,
 			}
 		}
 	}
+	
+	void Controller::killRobot(){
+		drive.forward(0,0);
+		arm.move(0);
+		claw.rotate(0);
+		std::cout<<"Disabling Robot and exiting program"<<endl;
+	}
    
    	void Controller::runRobot(){
    	char ch;
@@ -296,7 +304,7 @@ const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40,
    	//cout << "FALG AFTER" << endl;
     hub.addListener(&collector);
     //cout << "FLAGGG" << endl;
-    while (1) {
+    while (!exit) {
         hub.runOnce(1000/15);
         collector.print();
         if (kbhit()){
@@ -328,6 +336,9 @@ const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40,
 					controllingClaw = false;
 					std::cout << std::boolalpha << "Controlling Drive!" << std::endl;
 				 	break;
+			 	case '27':
+			 		exit = true;
+			 		killRobot();
 			}
    	
    }	

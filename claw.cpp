@@ -1,19 +1,22 @@
 #include "claw.h"
 #include <cmath>
 
+const int TOL = -20;
+
 Claw::Claw(){
 	unlocked=true;
 	isOpen=true;
 	rotated=false;
-	TOL = -20;
+	
 } 
+
+
 Claw::Claw(Motor *motorA, Motor *motorC){
 	clawMotor = motorA;
 	rotateClawMotor = motorC;
 	unlocked = true;
 	isOpen = true;
 	rotated = false;
-	TOL = -20;
 }
 
 void Claw::initialize(){

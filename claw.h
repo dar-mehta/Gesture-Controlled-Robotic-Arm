@@ -26,7 +26,7 @@ class Claw{
 		Motor *clawMotor;
 		Motor *rotateClawMotor;
 		bool unlocked, isOpen, rotated;
-		int initClaw, initRotation, i,j, TOL;
+		int initClaw, initRotation, i,j;
 		long rotation;
 		long int clawEncoder, rotationEncoder, initClawEncoder, initRotateEncoder;
 };

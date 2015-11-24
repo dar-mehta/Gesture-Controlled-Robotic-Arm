@@ -30,7 +30,7 @@ class Controller{
 		Claw claw;
 		int rollInit,yawInit, target, lMotorSpeed,rMotorSpeed;
 		bool controllingDrive, controllingArm, controllingClaw,
-  			 onRollInit, onYawInit, systemStatus;
+  			 onRollInit, onYawInit, systemStatus, exit;
 			 
 		   myo::Hub hub;
 	public:
@@ -55,6 +55,8 @@ class Controller{
 		void setYaw (int);
 	
 		void setPose(int);
+		
+		void killRobot();
 	   
 	   	void runRobot();
 		   
