@@ -41,7 +41,8 @@ class Controller{
 		Controller();
 	
 		void selectPort(ifstream  &, int &, int &);
-	
+		
+		bool test();
 	
 		void setConnections();
 	    

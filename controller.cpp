@@ -1,4 +1,7 @@
 #include "controller.h"
+#include <iostream>
+#include <cstdio>
+#include <ctime>
 const double latSpeed[9]={0.6,0.40,0.20,0,0,0,-0.20,-0.40,-0.6};
 const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40, -75};
 
@@ -36,7 +39,7 @@ const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40,
 
 	}
 	
-	bool test(){
+ 	bool Controller::test(){
 		
 		std::clock_t start;
     	double duration = 0;
@@ -51,7 +54,7 @@ const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40,
     	duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 		}		
 		drive.forward(0,0);
-		if(!(drive.leftDrive->get_Encoder() > encoderA && drive.rightDrive->get_Encoder >encoderB)){
+		if(!(drive.leftDrive->get_Encoder() > encoderA && drive.rightDrive->get_Encoder() >encoderB)){
 			std::cout<< "Test failed at drive forward"<<endl;
 			return false;
 		}
@@ -67,7 +70,7 @@ const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40,
     	duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 		}
 		drive.forward(0,0);
-		if(!(drive.leftDrive->get_Encoder() < encoderA && drive.rightDrive->get_Encoder < encoderB)){
+		if(!(drive.leftDrive->get_Encoder() < encoderA && drive.rightDrive->get_Encoder() < encoderB)){
 			std::cout<< "Test failed at drive backwards"<<endl;
 			return false;
 		}

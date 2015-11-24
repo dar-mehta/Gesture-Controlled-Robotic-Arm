@@ -5,12 +5,13 @@
 
 class ArmLift{
 	private:
-	    Motor *liftMotor;
+	    
 	    Touch *elevatorTouch;
 	    int i;
 		bool unlocked;
 		
 	public :
+		Motor *liftMotor;
 		ArmLift(Motor*,Touch*);
 		ArmLift();
 		
