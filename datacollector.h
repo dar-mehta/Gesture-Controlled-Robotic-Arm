@@ -40,6 +40,7 @@ public:
     bool isUnlocked;
 
     int roll_w, pitch_w, yaw_w;
+    float roll, pitch, yaw;
     myo::Pose currentPose;
 };
 

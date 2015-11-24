@@ -23,6 +23,9 @@ void DataCollector::onUnpair(myo::Myo* myo, uint64_t timestamp)
     roll_w = 0;
     pitch_w = 0;
     yaw_w = 0;
+    yaw = 0;
+    pitch = 0;
+    roll = 0;
     onArm = false;
     isUnlocked = false;
 }
@@ -37,18 +40,18 @@ void DataCollector::onOrientationData(myo::Myo* myo, uint64_t timestamp, const m
 	controlSystem = controller->getControlSystem();
 	systemUnlocked = controller->getSystemStatus();
 	if (controlSystem==2 && systemUnlocked){
-		float roll = atan2(2.0f * (quat.w() * quat.x() + quat.y() * quat.z()),
+		roll = atan2(2.0f * (quat.w() * quat.x() + quat.y() * quat.z()),
                        1.0f - 2.0f * (quat.x() * quat.x() + quat.y() * quat.y()));
 		roll_w = static_cast<int>((roll + (float)M_PI/2.0f)/M_PI * 18);		   
 		controller->setRoll(roll_w);	
 	} else {
-		float pitch = asin(max(-1.0f, min(1.0f, 2.0f * (quat.w() * quat.y() - quat.z() * quat.x()))));
+		pitch = asin(max(-1.0f, min(1.0f, 2.0f * (quat.w() * quat.y() - quat.z() * quat.x()))));
 		pitch_w = static_cast<int>((pitch + (float)M_PI/2.0f)/M_PI * 18);
 		controller->setPitch(pitch_w);
 		//cout << "SPEED: " << controller->longSpeed[pitch_w] << endl;
 	}
     if (controlSystem == 0 && systemUnlocked){
-		float yaw = atan2(2.0f * (quat.w() * quat.z() + quat.x() * quat.y()),
+		yaw = atan2(2.0f * (quat.w() * quat.z() + quat.x() * quat.y()),
                     1.0f - 2.0f * (quat.y() * quat.y() + quat.z() * quat.z()));
 		yaw_w = static_cast<int>((yaw + (float)M_PI)/(M_PI * 2.0f) * 18);
 		controller->setYaw(yaw_w);
