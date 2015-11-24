@@ -8,6 +8,7 @@
 };*/
 class Claw{
 	public :
+		Claw();
 		Claw(Motor*, Motor*);
 		
 		void initialize();
@@ -25,7 +26,7 @@ class Claw{
 		Motor *clawMotor;
 		Motor *rotateClawMotor;
 		bool unlocked, isOpen, rotated;
-		int initClaw, initRotation, i, TOL;
+		int initClaw, initRotation, i,j, TOL;
 		long rotation;
 		long int clawEncoder, rotationEncoder, initClawEncoder, initRotateEncoder;
 };
