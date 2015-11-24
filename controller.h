@@ -36,8 +36,7 @@ class Controller{
 	public:
 		
 		int index;
-		int longSpeed[15];
-		double latSpeed[9];
+		
 		
 		Controller();
 	

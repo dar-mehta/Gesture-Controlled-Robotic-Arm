@@ -1,5 +1,6 @@
 #include "controller.h"
-
+const double latSpeed[9]={0.6,0.40,0.20,0,0,0,-0.20,-0.40,-0.6};
+const int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40, -75};
 
 	Controller::Controller(){
 		
@@ -20,10 +21,6 @@
 		drive= Drive(motorLeftDrive, motorRightDrive);
 		arm = ArmLift(motorLiftArm, elevatorTouch);
 		claw = Claw(motorToggleClaw, motorRotateClaw);
-		
-
-		double latSpeed[9]={1,0.80,0.60,0,0,0,-0.60,-0.80,-1};
-		int longSpeed[15]={75, 40, 25, 15, 10, 5, 0, 0, 0, -5, -10, -15, -25, -40, -75};
 		
 		target = 0;
 		yawInit = 0;
@@ -123,31 +120,40 @@
 			rollInit = roll;
 			onRollInit = false;
 		}
+		
 		target = roll - rollInit;
+		//cout << "TARGET: " << target << endl;
 		if(claw.isUnlocked())
 		if(target<=2){
 			claw.rotate(0);
-		} else if (target <= 11){
+		} else if (target <= 8){
+			//cout<<"ENCODER TARGET"<< ((target - 2) *12)<<endl;
 			claw.rotate((target - 2) *12);
+		}
+		else if(target > 8 <=11){
+			claw.rotate(108);
 		}
 	}
 	
 	void Controller::setPitch (int pitch){
 		if (controllingDrive && drive.isUnlocked()){
 			lMotorSpeed = rMotorSpeed = longSpeed[pitch];
+			//cout<<"PITCH:"<<pitch<<" SPEED"<<longSpeed[pitch] << endl;
 		} else if (controllingArm && arm.isUnlocked()){
 			arm.move(longSpeed[pitch]);
 		}
 	}
 	
 	void Controller::setYaw (int yaw){
+		
 		if(onYawInit){
 			yawInit = yaw;
 			onYawInit=false;
 		}
         index = yaw - yawInit + 4;
-        lMotorSpeed+=(100-fabs(lMotorSpeed))*(latSpeed[index]);
-        rMotorSpeed+=-(100-fabs(rMotorSpeed))*latSpeed[index];
+        lMotorSpeed+=-(100-fabs(lMotorSpeed))*(latSpeed[index]);
+        rMotorSpeed+=(100-fabs(rMotorSpeed))*(latSpeed[index]);
+        
         
         if(controllingDrive){
         	drive.forward(lMotorSpeed, rMotorSpeed);
@@ -159,6 +165,7 @@
 		if(controllingClaw){
 			if(pose == 0){
 					std::cout<<"Confirm Open Claw Request: "<<std::endl;
+					claw.rotateClawMotor->off();
 					switch (getch()){
 						case 'y':
 							claw.open();
@@ -178,14 +185,14 @@
    	void Controller::runRobot(){
    	char ch;
    	cout << "FALG BEFORE" << endl;
-   	DataCollector *collector = new DataCollector();
-	collector->initialize(this);
+   	DataCollector collector;
+	collector.initialize(this);
    	cout << "FALG AFTER" << endl;
-    hub.addListener(collector);
+    hub.addListener(&collector);
     cout << "FLAGGG" << endl;
     while (1) {
         hub.runOnce(1000/15);
-        collector->print();
+        collector.print();
         if (kbhit()){
         	ch = getch();
 			switch (ch){
@@ -195,6 +202,7 @@
 					claw.unlockClaw(!claw.isUnlocked());
 					std::cout << std::boolalpha << "Drive Control: " << drive.isUnlocked() << std::endl;
 					std::cout << std::boolalpha << "Arm Control: " << arm.isUnlocked() << std::endl;
+					std::cout << std::boolalpha << "Claw Control: " << claw.isUnlocked() << std::endl;
 				 	break;
 				case 'a':
 					controllingArm = true;

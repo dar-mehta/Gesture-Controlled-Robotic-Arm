@@ -1,4 +1,5 @@
 #include "datacollector.h"
+#define M_PI 3.14159265359
 #include <myo.hpp>
 #include "controller.h"
 #include "armlift.h"
@@ -44,6 +45,7 @@ void DataCollector::onOrientationData(myo::Myo* myo, uint64_t timestamp, const m
 		float pitch = asin(max(-1.0f, min(1.0f, 2.0f * (quat.w() * quat.y() - quat.z() * quat.x()))));
 		pitch_w = static_cast<int>((pitch + (float)M_PI/2.0f)/M_PI * 18);
 		controller->setPitch(pitch_w);
+		//cout << "SPEED: " << controller->longSpeed[pitch_w] << endl;
 	}
     if (controlSystem == 0 && systemUnlocked){
 		float yaw = atan2(2.0f * (quat.w() * quat.z() + quat.x() * quat.y()),
@@ -99,7 +101,7 @@ void DataCollector::onLock(myo::Myo* myo, uint64_t timestamp)
 
 void DataCollector::print()
 {
-    string controllingNow;
+    /*string controllingNow;
 	std::cout << '\r';
     if (controlSystem == 0){
 		controllingNow = "drive";
@@ -115,7 +117,7 @@ void DataCollector::print()
 
         std::cout << '[' << (isUnlocked ? "unlocked" : "locked  ") << ']'
                   << '[' << poseString << std::string(14 - poseString.size(), ' ') << ']';
-    }
+    }*/
 
     std::cout << std::flush;
 }
