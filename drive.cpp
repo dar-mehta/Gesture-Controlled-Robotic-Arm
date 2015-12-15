@@ -1,13 +1,13 @@
 #include "drive.h"
 
 Drive::Drive(){
-	unlocked = true;
+	unlocked = 1;
 } 
 
 Drive::Drive(Motor *motorA, Motor *motorB){
 	leftDrive = motorA;
 	rightDrive = motorB;
-	unlocked = true;
+	unlocked = 1;
 }
 
 
